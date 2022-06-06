@@ -9,6 +9,8 @@ class Knight : virtual public BasePiece
     public:
         Knight(char col, const int& x, const int& y) : BasePiece(col, x, y) {}
         vector<vector<int>> ListMoves(Board &board);
+        vector<string> ListMateMoves(Board &board);
+        vector<string> ListDefenceMoves(Board &board);
 };
 
 template <typename Board>
@@ -27,5 +29,33 @@ vector<vector<int>> Knight<Board>::ListMoves(Board &board)
                     ans.push_back({list[k][0], list[k][1]});
                 board.Undo_Latest_Move();
             }
+    return ans;
+}
+template <typename Board>
+vector<string> Knight<Board>::ListMateMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<string> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, true, !colour, 1))
+            ans.push_back(board.ConvertMove(board.Moves.front()));
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+template <typename Board>
+vector<string> Knight<Board>::ListDefenceMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<string> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, false, !colour, 1))
+            ans.push_back(board.ConvertMove(board.Moves.front()));
+        board.Undo_Latest_Move();
+    }
     return ans;
 }

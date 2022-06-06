@@ -469,7 +469,281 @@ bool Board::is_Checkmate(bool col)
     }
     return false;
 }
-
+bool Board::Predict(bool colour, bool mode, bool turn, const int &num)
+{
+    if ((mode && is_Checkmate(!colour)) || (!mode && is_Checkmate(colour)))
+        return true;
+    if (num == 4 || (num == 3 && mode))
+        return false;
+    else
+    {
+        if (turn)
+        {
+            for (int i=0; i<White_Pieces.Pawns.size(); i++)
+            {
+                Pawn<Board> &pawn = White_Pieces.Pawns[i];
+                vector<vector<int>> temp = pawn.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(pawn.Position[0], pawn.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<White_Pieces.Rooks.size(); i++)
+            {
+                Rook<Board> &rook = White_Pieces.Rooks[i];
+                vector<vector<int>> temp = rook.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(rook.Position[0], rook.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<White_Pieces.Bishops.size(); i++)
+            {
+                Bishop<Board> &bishop = White_Pieces.Bishops[i];
+                vector<vector<int>> temp = bishop.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(bishop.Position[0], bishop.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<White_Pieces.Knights.size(); i++)
+            {
+                Knight<Board> &knight = White_Pieces.Knights[i];
+                vector<vector<int>> temp = knight.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(knight.Position[0], knight.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<White_Pieces.Queens.size(); i++)
+            {
+                Queen<Board> &queen = White_Pieces.Queens[i];
+                vector<vector<int>> temp = queen.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(queen.Position[0], queen.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<White_Pieces.Kings.size(); i++)
+            {
+                King<Board> &king = White_Pieces.Kings[i];
+                vector<vector<int>> temp = king.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(king.Position[0], king.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            if ((mode && turn == !colour) || (!mode && turn == colour))
+                return true;
+            return false;
+        }
+        else
+        {
+            for (int i=0; i<Black_Pieces.Pawns.size(); i++)
+            {
+                Pawn<Board> &pawn = Black_Pieces.Pawns[i];
+                vector<vector<int>> temp = pawn.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(pawn.Position[0], pawn.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<Black_Pieces.Rooks.size(); i++)
+            {
+                Rook<Board> &rook = Black_Pieces.Rooks[i];
+                vector<vector<int>> temp = rook.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(rook.Position[0], rook.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<Black_Pieces.Bishops.size(); i++)
+            {
+                Bishop<Board> &bishop = Black_Pieces.Bishops[i];
+                vector<vector<int>> temp = bishop.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(bishop.Position[0], bishop.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<Black_Pieces.Knights.size(); i++)
+            {
+                Knight<Board> &knight = Black_Pieces.Knights[i];
+                vector<vector<int>> temp = knight.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(knight.Position[0], knight.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<Black_Pieces.Queens.size(); i++)
+            {
+                Queen<Board> &queen = Black_Pieces.Queens[i];
+                vector<vector<int>> temp = queen.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(queen.Position[0], queen.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            for (int i=0; i<Black_Pieces.Kings.size(); i++)
+            {
+                King<Board> &king = Black_Pieces.Kings[i];
+                vector<vector<int>> temp = king.ListMoves(*this);
+                for (int j=0; j<temp.size(); j++)
+                {
+                    MakeMove(king.Position[0], king.Position[1], temp[j][0], temp[j][1]);
+                    if (!Predict(colour, mode, !turn, num+1))
+                    {
+                        Undo_Latest_Move();
+                        if ((mode && turn == !colour) || (!mode && turn == colour))
+                            return false;
+                    }
+                    else if ((mode && turn == colour) || (!mode && turn == !colour))
+                    {
+                        Undo_Latest_Move();
+                        return true;
+                    }
+                    else Undo_Latest_Move();
+                }
+            }
+            if ((mode && turn == !colour) || (!mode && turn == colour))
+                return true;
+            return false;
+        }
+    }
+    return true;
+}
 string Board::ConvertMove(string &move)
 {
     string ans;
