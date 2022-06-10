@@ -7,7 +7,14 @@ template <typename Board>
 class Knight : virtual public BasePiece
 {
     public:
-        Knight(char col, const int& x, const int& y) : BasePiece(col, x, y) {}
+        Knight(char col, const int& x, const int& y) : BasePiece(col, x, y)
+        {
+            string temp = "N";
+            if(col=='W') temp += "W";
+            else temp += "B";
+            sprite.setTexture(Piece_Textures[temp]);
+            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
+        }
         vector<vector<int>> ListMoves(Board &board);
         vector<string> ListMateMoves(Board &board);
         vector<string> ListDefenceMoves(Board &board);

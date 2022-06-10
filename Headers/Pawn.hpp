@@ -7,7 +7,14 @@ template <typename Board>
 class Pawn : virtual public BasePiece
 {
     public:
-        Pawn(char col, const int& x, const int& y) : BasePiece(col, x, y) {}
+        Pawn(char col, const int& x, const int& y) : BasePiece(col, x, y)
+        {
+            string temp = "P";
+            if(col=='W') temp += "W";
+            else temp += "B";
+            sprite.setTexture(Piece_Textures[temp]);
+            sprite.setPosition(Position[1]*100+28, Position[0]*100+3);
+        }
         vector<vector<int>> ListMoves(Board &board);
         vector<string> ListMateMoves(Board &board);
         vector<string> ListDefenceMoves(Board &board);

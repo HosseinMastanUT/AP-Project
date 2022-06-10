@@ -1,1 +1,1 @@
-/usr/bin/c++ -rdynamic CMakeFiles/Chess.dir/Source/main.cpp.o -o Chess 
+/usr/bin/c++ -rdynamic CMakeFiles/Chess.dir/Source/main.cpp.o CMakeFiles/Chess.dir/Source/Board.cpp.o -o Chess  -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio 
