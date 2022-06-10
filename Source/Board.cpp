@@ -1187,9 +1187,13 @@ void Board::RunGraphics()
             if (event.type == Event::Closed)
                 Window->close();
             if (Mouse::isButtonPressed(Mouse::Left))
-            {
                 MouseClick(Mouse::getPosition(*Window));
-            }
+            else if(Mouse::isButtonPressed(Mouse::Right))
+                if(!Moves.empty())
+                {
+                    Undo_Latest_Move(true);
+                    Turn = !Turn;
+                }
         }
         Window->clear(Color(89,89,89));
         drawboard();
