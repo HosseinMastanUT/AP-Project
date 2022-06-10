@@ -20,6 +20,7 @@ public:
     Font font;
     Text text, ResetWord;
     RectangleShape ResetAll;
+    vector<Sprite> MoveChoices;
     struct Pieces
     {
         vector<King<Board>> Kings;
