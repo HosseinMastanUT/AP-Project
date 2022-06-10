@@ -16,8 +16,8 @@ class King : virtual public BasePiece
             sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
         }
         vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
 };
 
 template <typename Board>
@@ -36,29 +36,29 @@ vector<vector<int>> King<Board>::ListMoves(Board &board)
     return ans;
 }
 template <typename Board>
-vector<string> King<Board>::ListMateMoves(Board &board)
+vector<vector<int>> King<Board>::ListMateMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
 }
 template <typename Board>
-vector<string> King<Board>::ListDefenceMoves(Board &board)
+vector<vector<int>> King<Board>::ListDefenceMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;

@@ -19,8 +19,10 @@ public:
     RenderWindow *Window;
     Font font;
     Text text, ResetWord;
-    RectangleShape ResetAll;
+    RectangleShape ResetAll, Check;
     vector<Sprite> MoveChoices;
+    vector<vector<int>> SelectedMoves;
+    int Selectedx, Selectedy;
     struct Pieces
     {
         vector<King<Board>> Kings;
@@ -37,7 +39,7 @@ public:
     Board();
     void SetupBoard();
     bool is_in_Check(bool);
-    void MakeMove(int, int, int, int);
+    void MakeMove(int, int, int, int, bool);
     void Undo_Latest_Move(bool);
     bool is_Checkmate(bool);
     void Print()
