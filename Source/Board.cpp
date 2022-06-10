@@ -377,40 +377,40 @@ void Board::Undo_Latest_Move(bool Special = false)
                 Black_Pieces.Queens[(int)Eliminated_Piece[2]-48].Position[0] = k;
         }
         Grid[k][l] = Eliminated_Piece;
-        if(!Special)
-            return;
-        if (Piece[1]=='W')
-        {
-            if (Piece[0]=='P')
-                White_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='R')
-                White_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='N')
-                White_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='B')
-                White_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='Q')
-                White_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='K')
-                White_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-        }
-    else
-        {
-            if (Piece[0]=='P')
-                Black_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='R')
-                Black_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='N')
-                Black_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='B')
-                Black_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='Q')
-                Black_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='K')
-                Black_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-        }
     }
     Moves.pop_back();
+    if(!Special)
+            return;
+    if (Piece[1]=='W')
+    {
+        if (Piece[0]=='P')
+            White_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='R')
+            White_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='N')
+            White_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='B')
+            White_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='Q')
+            White_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='K')
+            White_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+    }
+    else
+    {
+        if (Piece[0]=='P')
+            Black_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='R')
+            Black_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='N')
+            Black_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='B')
+            Black_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='Q')
+            Black_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='K')
+            Black_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+    }
 }
 bool Board::is_Checkmate(bool col)
 {
@@ -1148,6 +1148,7 @@ void Board::RunGraphics()
 }
 void Board::MouseClick(const Vector2i& position)
 {
+    MoveChoices.clear();
     if(position.x>=835 && position.x<=890 && position.y>=100 && position.y<=150)
     {
         while(!Moves.empty())
@@ -1168,22 +1169,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = White_Pieces.Pawns[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = White_Pieces.Pawns[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                     else
@@ -1192,22 +1193,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = Black_Pieces.Pawns[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = Black_Pieces.Pawns[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                 }
@@ -1219,22 +1220,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = White_Pieces.Kings[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = White_Pieces.Kings[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                     else
@@ -1243,22 +1244,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = Black_Pieces.Kings[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = Black_Pieces.Kings[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                 }
@@ -1270,22 +1271,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = White_Pieces.Rooks[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = White_Pieces.Rooks[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                     else
@@ -1294,22 +1295,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = Black_Pieces.Rooks[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = Black_Pieces.Rooks[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                 }
@@ -1321,22 +1322,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = White_Pieces.Bishops[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = White_Pieces.Bishops[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                     else
@@ -1345,22 +1346,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = Black_Pieces.Bishops[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = Black_Pieces.Bishops[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                 }
@@ -1372,22 +1373,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = White_Pieces.Knights[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = White_Pieces.Knights[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                     else
@@ -1396,22 +1397,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = Black_Pieces.Knights[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = Black_Pieces.Knights[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                 }
@@ -1423,22 +1424,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = White_Pieces.Queens[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = White_Pieces.Queens[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                     else
@@ -1447,22 +1448,22 @@ void Board::MouseClick(const Vector2i& position)
                         for(int i=0; i<temp_.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
                         }
                         vector<string> Mate = Black_Pieces.Queens[temp[2]-'0'].ListMateMoves(*this);
                         for(int i=0; i<Mate.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['M']);
-                            MoveChoices[i].setPosition(((int)('8'-Mate[i][5]))*100+28, ((int)(Mate[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Mate[i][4])-'a'))*100+28, ((int)('8'-Mate[i][5]))*100+3);
                         }
                         vector<string> Defence = Black_Pieces.Queens[temp[2]-'0'].ListDefenceMoves(*this);
                         for(int i=0; i<Defence.size(); i++)
                         {
                             MoveChoices.push_back(Sprite());
-                            MoveChoices[i].setTexture(MoveOptions['D']);
-                            MoveChoices[i].setPosition(((int)('8'-Defence[i][5]))*100+28, ((int)(Defence[i][4])-'a')*100+3);
+                            MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                            MoveChoices[MoveChoices.size()-1].setPosition(((int)((Defence[i][4])-'a'))*100+28, ((int)('8'-Defence[i][5]))*100+3);
                         }
                     }
                 }
