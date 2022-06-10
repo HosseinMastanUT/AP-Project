@@ -37,6 +37,328 @@ public:
 using namespace std;
 
 template <typename Board>
+class Bishop : virtual public BasePiece
+{
+    public:
+        Bishop(char col, const int& x, const int& y) : BasePiece(col, x, y)
+        {
+            string temp = "B";
+            if(col=='W') temp += "W";
+            else temp += "B";
+            sprite.setTexture(Piece_Textures[temp]);
+            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
+        }
+        vector<vector<int>> ListMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
+};
+
+template <typename Board>
+vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
+{
+    vector<vector<int>> ans;
+    if (Position[0]==-1)
+        return ans;
+    for (int i=1; i<=min(Position[1],Position[0]); i++)
+    {
+        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-i);
+            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
+            {
+                board.Undo_Latest_Move();
+                break;
+            }
+            else
+                board.Undo_Latest_Move();
+        }
+        if (board.Grid[Position[0]-i][Position[1]-i]!="--")
+        {
+            if ((board.Grid[Position[0]-i][Position[1]-i][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]-i][1]=='W' && !colour))
+            {
+                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-i);
+                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                    ans.push_back({Position[0], Position[1]});
+                board.Undo_Latest_Move();
+            }
+            break;
+        }
+        else
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-i);
+            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))\
+                ans.push_back({Position[0], Position[1]});
+            board.Undo_Latest_Move();
+        }
+    }
+    for (int i=1; i<=min(7-Position[0],Position[1]); i++)
+    {
+        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]-i);
+            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
+            {
+                board.Undo_Latest_Move();
+                break;
+            }
+            else
+                board.Undo_Latest_Move();
+        }
+        if (board.Grid[Position[0]+i][Position[1]-i]!="--")
+        {
+            if ((board.Grid[Position[0]+i][Position[1]-i][1]=='B' && colour) || (board.Grid[Position[0]+i][Position[1]-i][1]=='W' && !colour))
+            {
+                board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]-i);
+                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                    ans.push_back({Position[0], Position[1]});
+                board.Undo_Latest_Move();
+            }
+            break;
+        }
+        else
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]-i);
+            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                ans.push_back({Position[0], Position[1]});
+            board.Undo_Latest_Move();
+        }
+    }
+    for (int i=1; i<=min(Position[0],7-Position[1]); i++)
+    {
+        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]+i);
+            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
+            {
+                board.Undo_Latest_Move();
+                break;
+            }
+            else
+                board.Undo_Latest_Move();
+        }
+        if (board.Grid[Position[0]-i][Position[1]+i]!="--")
+        {
+            if ((board.Grid[Position[0]-i][Position[1]+i][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]+i][1]=='W' && !colour))
+            {
+                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]+i);
+                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                    ans.push_back({Position[0], Position[1]});
+                board.Undo_Latest_Move();
+            }
+            break;
+        }
+        else
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]+i);
+            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                ans.push_back({Position[0], Position[1]});
+            board.Undo_Latest_Move();
+        }
+    }
+    for (int i=1; i<=min(7-Position[1],7-Position[0]); i++)
+    {
+        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]+i);
+            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
+            {
+                board.Undo_Latest_Move();
+                break;
+            }
+            else
+                board.Undo_Latest_Move();
+        }
+        if (board.Grid[Position[0]+i][Position[1]+i]!="--")
+        {
+            if ((board.Grid[Position[0]+i][Position[1]+i][1]=='B' && colour) || (board.Grid[Position[0]+i][Position[1]+i][1]=='W' && !colour))
+            {
+                board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]+i);
+                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                    ans.push_back({Position[0], Position[1]});
+                board.Undo_Latest_Move();
+            }
+            break;
+        }
+        else
+        {
+            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]+i);
+            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                ans.push_back({Position[0], Position[1]});
+            board.Undo_Latest_Move();
+        }
+    }
+    return ans;
+}
+template <typename Board>
+vector<vector<int>> Bishop<Board>::ListMateMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<vector<int>> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, true, !colour, 1))
+            ans.push_back({temp[i][0], temp[i][1]});
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+template <typename Board>
+vector<vector<int>> Bishop<Board>::ListDefenceMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<vector<int>> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, false, !colour, 1))
+            ans.push_back({temp[i][0], temp[i][1]});
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+
+#pragma once
+#include<Base_Piece.hpp>
+#include<vector>
+using namespace std;
+
+template <typename Board>
+class King : virtual public BasePiece
+{
+    public:
+        King(char col, const int& x, const int& y) : BasePiece(col, x, y)
+        {
+            string temp = "K";
+            if(col=='W') temp += "W";
+            else temp += "B";
+            sprite.setTexture(Piece_Textures[temp]);
+            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
+        }
+        vector<vector<int>> ListMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
+};
+
+template <typename Board>
+vector<vector<int>> King<Board>::ListMoves(Board &board)
+{
+    vector<vector<int>> ans;
+    for (int i=-1; i<2; i++)
+        for (int j=-1; j<2; j++)
+            if((i!=0 || j!=0) && Position[0]>=i && Position[0]<=7+i && Position[1]>=j && Position[1]<=7+j && (board.Grid[Position[0]-i][Position[1]-j]=="--" || (board.Grid[Position[0]-i][Position[1]-j][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]-j][1]=='W' && !colour)))
+            {
+                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-j);
+                if ((!colour && !board.is_in_Check(false)) || (colour && !board.is_in_Check(true)))
+                    ans.push_back({Position[0], Position[1]});
+                board.Undo_Latest_Move();
+            }
+    return ans;
+}
+template <typename Board>
+vector<vector<int>> King<Board>::ListMateMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<vector<int>> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, true, !colour, 1))
+            ans.push_back({temp[i][0], temp[i][1]});
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+template <typename Board>
+vector<vector<int>> King<Board>::ListDefenceMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<vector<int>> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, false, !colour, 1))
+            ans.push_back({temp[i][0], temp[i][1]});
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+
+#pragma once
+#include<Base_Piece.hpp>
+#include<vector>
+using namespace std;
+
+template <typename Board>
+class Knight : virtual public BasePiece
+{
+    public:
+        Knight(char col, const int& x, const int& y) : BasePiece(col, x, y)
+        {
+            string temp = "N";
+            if(col=='W') temp += "W";
+            else temp += "B";
+            sprite.setTexture(Piece_Textures[temp]);
+            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
+        }
+        vector<vector<int>> ListMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
+};
+
+template <typename Board>
+vector<vector<int>> Knight<Board>::ListMoves(Board &board)
+{
+    vector<vector<int>> ans;
+    if (Position[0]==-1)
+        return ans;
+    int i = Position[0], j = Position[1], list[8][2] = {{i+2, j+1}, {i+2, j-1}, {i+1, j+2}, {i+1, j-2}, {i-1, j+2}, {i-1, j-2}, {i-2, j+1}, {i-2, j-1}};
+    for (int k=0; k<8; k++)
+        if(list[k][0]>=0 && list[k][0]<8 && list[k][1]>=0 && list[k][1]<8)
+            if ((board.Grid[list[k][0]][list[k][1]]=="--") || (board.Grid[list[k][0]][list[k][1]][1]=='B' && colour) || (board.Grid[list[k][0]][list[k][1]][1]=='W' && !colour))
+            {
+                board.MakeMove(Position[0],Position[1],list[k][0],list[k][1]);
+                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                    ans.push_back({list[k][0], list[k][1]});
+                board.Undo_Latest_Move();
+            }
+    return ans;
+}
+template <typename Board>
+vector<vector<int>> Knight<Board>::ListMateMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<vector<int>> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, true, !colour, 1))
+            ans.push_back({temp[i][0], temp[i][1]});
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+template <typename Board>
+vector<vector<int>> Knight<Board>::ListDefenceMoves(Board &board)
+{
+    vector<vector<int>> temp = ListMoves(board);
+    vector<vector<int>> ans;
+    for (int i=0; i<temp.size(); i++)
+    {
+        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
+        if(board.Predict(colour, false, !colour, 1))
+            ans.push_back({temp[i][0], temp[i][1]});
+        board.Undo_Latest_Move();
+    }
+    return ans;
+}
+
+#pragma once
+#include<Base_Piece.hpp>
+#include<vector>
+using namespace std;
+
+template <typename Board>
 class Pawn : virtual public BasePiece
 {
     public:
@@ -49,8 +371,8 @@ class Pawn : virtual public BasePiece
             sprite.setPosition(Position[1]*100+28, Position[0]*100+3);
         }
         vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
 };
 
 template <typename Board>
@@ -124,216 +446,29 @@ vector<vector<int>> Pawn<Board>::ListMoves(Board &board)
     return ans;
 }
 template <typename Board>
-vector<string> Pawn<Board>::ListMateMoves(Board &board)
+vector<vector<int>> Pawn<Board>::ListMateMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
-    for (int i=0; i<temp.size(); i++)
-    {
-        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
-        if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
-        board.Undo_Latest_Move();
-    }
-    return ans;
-}
-template <typename Board>
-vector<string> Pawn<Board>::ListDefenceMoves(Board &board)
-{
-    vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
-    for (int i=0; i<temp.size(); i++)
-    {
-        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
-        if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
-        board.Undo_Latest_Move();
-    }
-    return ans;
-}
-
-#pragma once
-#include<Base_Piece.hpp>
-#include<vector>
-using namespace std;
-
-template <typename Board>
-class Rook : virtual public BasePiece
-{
-    public:
-        Rook(char col, const int& x, const int& y) : BasePiece(col, x, y)
-        {
-            string temp = "R";
-            if(col=='W') temp += "W";
-            else temp += "B";
-            sprite.setTexture(Piece_Textures[temp]);
-            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
-        }
-        vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
-};
-
-template <typename Board>
-vector<vector<int>> Rook<Board>::ListMoves(Board &board)
-{
     vector<vector<int>> ans;
-    if (Position[0]==-1)
-        return ans;
-    for (int i=1; i<=Position[1]; i++)
-    {
-        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
-        {
-            board.MakeMove(Position[0],Position[1],Position[0],Position[1]-i);
-            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
-            {
-                board.Undo_Latest_Move();
-                break;
-            }
-            else
-                board.Undo_Latest_Move();
-        }
-        if (board.Grid[Position[0]][Position[1]-i]!="--")
-        {
-            if ((board.Grid[Position[0]][Position[1]-i][1]=='B' && colour) || (board.Grid[Position[0]][Position[1]-i][1]=='W' && !colour))
-            {
-                board.MakeMove(Position[0],Position[1],Position[0],Position[1]-i);
-                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                    ans.push_back({Position[0], Position[1]});
-                board.Undo_Latest_Move();
-            }
-            break;
-        }
-        else
-        {
-            board.MakeMove(Position[0],Position[1],Position[0],Position[1]-i);
-            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                ans.push_back({Position[0], Position[1]});
-            board.Undo_Latest_Move();
-        }
-    }
-    for (int i=1; i<=7-Position[0]; i++)
-    {
-        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
-        {
-            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]);
-            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
-            {
-                board.Undo_Latest_Move();
-                break;
-            }
-            else
-                board.Undo_Latest_Move();
-        }
-        if (board.Grid[Position[0]+i][Position[1]]!="--")
-        {
-            if ((board.Grid[Position[0]+i][Position[1]][1]=='B' && colour) || (board.Grid[Position[0]+i][Position[1]][1]=='W' && !colour))
-            {
-                board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]);
-                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                    ans.push_back({Position[0], Position[1]});
-                board.Undo_Latest_Move();
-            }
-            break;
-        }
-        else
-        {
-            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]);
-            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                ans.push_back({Position[0], Position[1]});
-            board.Undo_Latest_Move();
-        }
-    }
-    for (int i=1; i<=Position[0]; i++)
-    {
-        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
-        {
-            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]);
-            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
-            {
-                board.Undo_Latest_Move();
-                break;
-            }
-            else
-                board.Undo_Latest_Move();
-        }
-        if (board.Grid[Position[0]-i][Position[1]]!="--")
-        {
-            if ((board.Grid[Position[0]-i][Position[1]][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]][1]=='W' && !colour))
-            {
-                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]);
-                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                    ans.push_back({Position[0], Position[1]});
-                board.Undo_Latest_Move();
-            }
-            break;
-        }
-        else
-        {
-            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]);
-            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                ans.push_back({Position[0], Position[1]});
-            board.Undo_Latest_Move();
-        }
-    }
-    for (int i=1; i<=7-Position[1]; i++)
-    {
-        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
-        {
-            board.MakeMove(Position[0],Position[1],Position[0],Position[1]+i);
-            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
-            {
-                board.Undo_Latest_Move();
-                break;
-            }
-            else
-                board.Undo_Latest_Move();
-        }
-        if (board.Grid[Position[0]][Position[1]+i]!="--")
-        {
-            if ((board.Grid[Position[0]][Position[1]+i][1]=='B' && colour) || (board.Grid[Position[0]][Position[1]+i][1]=='W' && !colour))
-            {
-                board.MakeMove(Position[0],Position[1],Position[0],Position[1]+i);
-                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                    ans.push_back({Position[0], Position[1]});
-                board.Undo_Latest_Move();
-            }
-            break;
-        }
-        else
-        {
-            board.MakeMove(Position[0],Position[1],Position[0],Position[1]+i);
-            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                ans.push_back({Position[0], Position[1]});
-            board.Undo_Latest_Move();
-        }
-    }
-    return ans;
-}
-template <typename Board>
-vector<string> Rook<Board>::ListMateMoves(Board &board)
-{
-    vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
 }
 template <typename Board>
-vector<string> Rook<Board>::ListDefenceMoves(Board &board)
+vector<vector<int>> Pawn<Board>::ListDefenceMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
@@ -357,8 +492,8 @@ class Queen : virtual public BasePiece
             sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
         }
         vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
 };
 
 template <typename Board>
@@ -626,29 +761,29 @@ vector<vector<int>> Queen<Board>::ListMoves(Board &board)
     return ans;
 }
 template <typename Board>
-vector<string> Queen<Board>::ListMateMoves(Board &board)
+vector<vector<int>> Queen<Board>::ListMateMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
 }
 template <typename Board>
-vector<string> Queen<Board>::ListDefenceMoves(Board &board)
+vector<vector<int>> Queen<Board>::ListDefenceMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
@@ -660,33 +795,33 @@ vector<string> Queen<Board>::ListDefenceMoves(Board &board)
 using namespace std;
 
 template <typename Board>
-class Bishop : virtual public BasePiece
+class Rook : virtual public BasePiece
 {
     public:
-        Bishop(char col, const int& x, const int& y) : BasePiece(col, x, y)
+        Rook(char col, const int& x, const int& y) : BasePiece(col, x, y)
         {
-            string temp = "B";
+            string temp = "R";
             if(col=='W') temp += "W";
             else temp += "B";
             sprite.setTexture(Piece_Textures[temp]);
             sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
         }
         vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
+        vector<vector<int>> ListMateMoves(Board &board);
+        vector<vector<int>> ListDefenceMoves(Board &board);
 };
 
 template <typename Board>
-vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
+vector<vector<int>> Rook<Board>::ListMoves(Board &board)
 {
     vector<vector<int>> ans;
     if (Position[0]==-1)
         return ans;
-    for (int i=1; i<=min(Position[1],Position[0]); i++)
+    for (int i=1; i<=Position[1]; i++)
     {
         if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
         {
-            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-i);
+            board.MakeMove(Position[0],Position[1],Position[0],Position[1]-i);
             if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
             {
                 board.Undo_Latest_Move();
@@ -695,11 +830,11 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
             else
                 board.Undo_Latest_Move();
         }
-        if (board.Grid[Position[0]-i][Position[1]-i]!="--")
+        if (board.Grid[Position[0]][Position[1]-i]!="--")
         {
-            if ((board.Grid[Position[0]-i][Position[1]-i][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]-i][1]=='W' && !colour))
+            if ((board.Grid[Position[0]][Position[1]-i][1]=='B' && colour) || (board.Grid[Position[0]][Position[1]-i][1]=='W' && !colour))
             {
-                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-i);
+                board.MakeMove(Position[0],Position[1],Position[0],Position[1]-i);
                 if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
                     ans.push_back({Position[0], Position[1]});
                 board.Undo_Latest_Move();
@@ -708,49 +843,17 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
         }
         else
         {
-            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-i);
-            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))\
-                ans.push_back({Position[0], Position[1]});
-            board.Undo_Latest_Move();
-        }
-    }
-    for (int i=1; i<=min(7-Position[0],Position[1]); i++)
-    {
-        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
-        {
-            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]-i);
-            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
-            {
-                board.Undo_Latest_Move();
-                break;
-            }
-            else
-                board.Undo_Latest_Move();
-        }
-        if (board.Grid[Position[0]+i][Position[1]-i]!="--")
-        {
-            if ((board.Grid[Position[0]+i][Position[1]-i][1]=='B' && colour) || (board.Grid[Position[0]+i][Position[1]-i][1]=='W' && !colour))
-            {
-                board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]-i);
-                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                    ans.push_back({Position[0], Position[1]});
-                board.Undo_Latest_Move();
-            }
-            break;
-        }
-        else
-        {
-            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]-i);
+            board.MakeMove(Position[0],Position[1],Position[0],Position[1]-i);
             if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
                 ans.push_back({Position[0], Position[1]});
             board.Undo_Latest_Move();
         }
     }
-    for (int i=1; i<=min(Position[0],7-Position[1]); i++)
+    for (int i=1; i<=7-Position[0]; i++)
     {
         if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
         {
-            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]+i);
+            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]);
             if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
             {
                 board.Undo_Latest_Move();
@@ -759,11 +862,11 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
             else
                 board.Undo_Latest_Move();
         }
-        if (board.Grid[Position[0]-i][Position[1]+i]!="--")
+        if (board.Grid[Position[0]+i][Position[1]]!="--")
         {
-            if ((board.Grid[Position[0]-i][Position[1]+i][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]+i][1]=='W' && !colour))
+            if ((board.Grid[Position[0]+i][Position[1]][1]=='B' && colour) || (board.Grid[Position[0]+i][Position[1]][1]=='W' && !colour))
             {
-                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]+i);
+                board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]);
                 if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
                     ans.push_back({Position[0], Position[1]});
                 board.Undo_Latest_Move();
@@ -772,17 +875,17 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
         }
         else
         {
-            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]+i);
+            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]);
             if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
                 ans.push_back({Position[0], Position[1]});
             board.Undo_Latest_Move();
         }
     }
-    for (int i=1; i<=min(7-Position[1],7-Position[0]); i++)
+    for (int i=1; i<=Position[0]; i++)
     {
         if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
         {
-            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]+i);
+            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]);
             if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
             {
                 board.Undo_Latest_Move();
@@ -791,11 +894,11 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
             else
                 board.Undo_Latest_Move();
         }
-        if (board.Grid[Position[0]+i][Position[1]+i]!="--")
+        if (board.Grid[Position[0]-i][Position[1]]!="--")
         {
-            if ((board.Grid[Position[0]+i][Position[1]+i][1]=='B' && colour) || (board.Grid[Position[0]+i][Position[1]+i][1]=='W' && !colour))
+            if ((board.Grid[Position[0]-i][Position[1]][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]][1]=='W' && !colour))
             {
-                board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]+i);
+                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]);
                 if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
                     ans.push_back({Position[0], Position[1]});
                 board.Undo_Latest_Move();
@@ -804,7 +907,39 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
         }
         else
         {
-            board.MakeMove(Position[0],Position[1],Position[0]+i,Position[1]+i);
+            board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]);
+            if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                ans.push_back({Position[0], Position[1]});
+            board.Undo_Latest_Move();
+        }
+    }
+    for (int i=1; i<=7-Position[1]; i++)
+    {
+        if (i==1 && ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false))))
+        {
+            board.MakeMove(Position[0],Position[1],Position[0],Position[1]+i);
+            if ((colour && board.is_in_Check(true)) || (!colour && board.is_in_Check(false)))
+            {
+                board.Undo_Latest_Move();
+                break;
+            }
+            else
+                board.Undo_Latest_Move();
+        }
+        if (board.Grid[Position[0]][Position[1]+i]!="--")
+        {
+            if ((board.Grid[Position[0]][Position[1]+i][1]=='B' && colour) || (board.Grid[Position[0]][Position[1]+i][1]=='W' && !colour))
+            {
+                board.MakeMove(Position[0],Position[1],Position[0],Position[1]+i);
+                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
+                    ans.push_back({Position[0], Position[1]});
+                board.Undo_Latest_Move();
+            }
+            break;
+        }
+        else
+        {
+            board.MakeMove(Position[0],Position[1],Position[0],Position[1]+i);
             if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
                 ans.push_back({Position[0], Position[1]});
             board.Undo_Latest_Move();
@@ -813,172 +948,45 @@ vector<vector<int>> Bishop<Board>::ListMoves(Board &board)
     return ans;
 }
 template <typename Board>
-vector<string> Bishop<Board>::ListMateMoves(Board &board)
+vector<vector<int>> Rook<Board>::ListMateMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
 }
 template <typename Board>
-vector<string> Bishop<Board>::ListDefenceMoves(Board &board)
+vector<vector<int>> Rook<Board>::ListDefenceMoves(Board &board)
 {
     vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
+    vector<vector<int>> ans;
     for (int i=0; i<temp.size(); i++)
     {
         board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
         if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
+            ans.push_back({temp[i][0], temp[i][1]});
         board.Undo_Latest_Move();
     }
     return ans;
 }
 
-#pragma once
-#include<Base_Piece.hpp>
-#include<vector>
+#include<iostream>
+#include<SFML/Graphics.hpp>
 using namespace std;
 
-template <typename Board>
-class King : virtual public BasePiece
+class Cell
 {
-    public:
-        King(char col, const int& x, const int& y) : BasePiece(col, x, y)
-        {
-            string temp = "K";
-            if(col=='W') temp += "W";
-            else temp += "B";
-            sprite.setTexture(Piece_Textures[temp]);
-            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
-        }
-        vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
+public:
+    sf::RectangleShape cell;
 };
 
-template <typename Board>
-vector<vector<int>> King<Board>::ListMoves(Board &board)
 {
-    vector<vector<int>> ans;
-    for (int i=-1; i<2; i++)
-        for (int j=-1; j<2; j++)
-            if((i!=0 || j!=0) && Position[0]>=i && Position[0]<=7+i && Position[1]>=j && Position[1]<=7+j && (board.Grid[Position[0]-i][Position[1]-j]=="--" || (board.Grid[Position[0]-i][Position[1]-j][1]=='B' && colour) || (board.Grid[Position[0]-i][Position[1]-j][1]=='W' && !colour)))
-            {
-                board.MakeMove(Position[0],Position[1],Position[0]-i,Position[1]-j);
-                if ((!colour && !board.is_in_Check(false)) || (colour && !board.is_in_Check(true)))
-                    ans.push_back({Position[0], Position[1]});
-                board.Undo_Latest_Move();
-            }
-    return ans;
-}
-template <typename Board>
-vector<string> King<Board>::ListMateMoves(Board &board)
-{
-    vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
-    for (int i=0; i<temp.size(); i++)
-    {
-        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
-        if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
-        board.Undo_Latest_Move();
-    }
-    return ans;
-}
-template <typename Board>
-vector<string> King<Board>::ListDefenceMoves(Board &board)
-{
-    vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
-    for (int i=0; i<temp.size(); i++)
-    {
-        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
-        if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
-        board.Undo_Latest_Move();
-    }
-    return ans;
-}
-
-#pragma once
-#include<Base_Piece.hpp>
-#include<vector>
-using namespace std;
-
-template <typename Board>
-class Knight : virtual public BasePiece
-{
-    public:
-        Knight(char col, const int& x, const int& y) : BasePiece(col, x, y)
-        {
-            string temp = "N";
-            if(col=='W') temp += "W";
-            else temp += "B";
-            sprite.setTexture(Piece_Textures[temp]);
-            sprite.setPosition(Position[1]*100+28,3+Position[0]*100);
-        }
-        vector<vector<int>> ListMoves(Board &board);
-        vector<string> ListMateMoves(Board &board);
-        vector<string> ListDefenceMoves(Board &board);
-};
-
-template <typename Board>
-vector<vector<int>> Knight<Board>::ListMoves(Board &board)
-{
-    vector<vector<int>> ans;
-    if (Position[0]==-1)
-        return ans;
-    int i = Position[0], j = Position[1], list[8][2] = {{i+2, j+1}, {i+2, j-1}, {i+1, j+2}, {i+1, j-2}, {i-1, j+2}, {i-1, j-2}, {i-2, j+1}, {i-2, j-1}};
-    for (int k=0; k<8; k++)
-        if(list[k][0]>=0 && list[k][0]<8 && list[k][1]>=0 && list[k][1]<8)
-            if ((board.Grid[list[k][0]][list[k][1]]=="--") || (board.Grid[list[k][0]][list[k][1]][1]=='B' && colour) || (board.Grid[list[k][0]][list[k][1]][1]=='W' && !colour))
-            {
-                board.MakeMove(Position[0],Position[1],list[k][0],list[k][1]);
-                if ((colour && !board.is_in_Check(true)) || (!colour && !board.is_in_Check(false)))
-                    ans.push_back({list[k][0], list[k][1]});
-                board.Undo_Latest_Move();
-            }
-    return ans;
-}
-template <typename Board>
-vector<string> Knight<Board>::ListMateMoves(Board &board)
-{
-    vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
-    for (int i=0; i<temp.size(); i++)
-    {
-        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
-        if(board.Predict(colour, true, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
-        board.Undo_Latest_Move();
-    }
-    return ans;
-}
-template <typename Board>
-vector<string> Knight<Board>::ListDefenceMoves(Board &board)
-{
-    vector<vector<int>> temp = ListMoves(board);
-    vector<string> ans;
-    for (int i=0; i<temp.size(); i++)
-    {
-        board.MakeMove(Position[0], Position[1], temp[i][0], temp[i][1]);
-        if(board.Predict(colour, false, !colour, 1))
-            ans.push_back(board.ConvertMove(board.Moves.front()));
-        board.Undo_Latest_Move();
-    }
-    return ans;
-}
-
-
-
-
 #pragma once
 #include<iostream>
 #include<vector>
@@ -1000,7 +1008,10 @@ public:
     RenderWindow *Window;
     Font font;
     Text text, ResetWord;
-    RectangleShape ResetAll;
+    RectangleShape ResetAll, Check;
+    vector<Sprite> MoveChoices;
+    vector<vector<int>> SelectedMoves;
+    int Selectedx, Selectedy;
     struct Pieces
     {
         vector<King<Board>> Kings;
@@ -1017,7 +1028,7 @@ public:
     Board();
     void SetupBoard();
     bool is_in_Check(bool);
-    void MakeMove(int, int, int, int);
+    void MakeMove(int, int, int, int, bool);
     void Undo_Latest_Move(bool);
     bool is_Checkmate(bool);
     void Print()
@@ -1280,7 +1291,7 @@ bool Board::is_in_Check(bool col)
     }
     return false;
 }
-void Board::MakeMove(int i, int j, int k, int l)
+void Board::MakeMove(int i, int j, int k, int l, bool Special = false)
 {
     string Piece = Grid[i][j], Eliminated_Piece = Grid[k][l], move = "0000";
     move[0] = (char)(i+48); move[1] = (char)(j+48); move[2] = (char)(k+48); move[3] = (char)(l+48);
@@ -1315,38 +1326,69 @@ void Board::MakeMove(int i, int j, int k, int l)
         }
     }
     if (Piece[1]=='W')
-        {
-            if (Piece[0]=='P')
-                {White_Pieces.Pawns[(int)Piece[2]-48].Position[0] = k; White_Pieces.Pawns[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='R')
-                {White_Pieces.Rooks[(int)Piece[2]-48].Position[0] = k; White_Pieces.Rooks[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='N')
-                {White_Pieces.Knights[(int)Piece[2]-48].Position[0] = k; White_Pieces.Knights[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='B')
-                {White_Pieces.Bishops[(int)Piece[2]-48].Position[0] = k; White_Pieces.Bishops[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='Q')
-                {White_Pieces.Queens[(int)Piece[2]-48].Position[0] = k; White_Pieces.Queens[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='K')
-                {White_Pieces.Kings[(int)Piece[2]-48].Position[0] = k; White_Pieces.Kings[(int)Piece[2]-48].Position[1] = l;}
-        }
+    {
+        if (Piece[0]=='P')
+            {White_Pieces.Pawns[(int)Piece[2]-48].Position[0] = k; White_Pieces.Pawns[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='R')
+            {White_Pieces.Rooks[(int)Piece[2]-48].Position[0] = k; White_Pieces.Rooks[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='N')
+            {White_Pieces.Knights[(int)Piece[2]-48].Position[0] = k; White_Pieces.Knights[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='B')
+            {White_Pieces.Bishops[(int)Piece[2]-48].Position[0] = k; White_Pieces.Bishops[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='Q')
+            {White_Pieces.Queens[(int)Piece[2]-48].Position[0] = k; White_Pieces.Queens[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='K')
+            {White_Pieces.Kings[(int)Piece[2]-48].Position[0] = k; White_Pieces.Kings[(int)Piece[2]-48].Position[1] = l;}
+    }
     else
-        {
-            if (Piece[0]=='P')
-                {Black_Pieces.Pawns[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Pawns[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='R')
-                {Black_Pieces.Rooks[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Rooks[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='N')
-                {Black_Pieces.Knights[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Knights[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='B')
-                {Black_Pieces.Bishops[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Bishops[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='Q')
-                {Black_Pieces.Queens[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Queens[(int)Piece[2]-48].Position[1] = l;}
-            else if (Piece[0]=='K')
-                {Black_Pieces.Kings[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Kings[(int)Piece[2]-48].Position[1] = l;}
-        }
+    {
+        if (Piece[0]=='P')
+            {Black_Pieces.Pawns[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Pawns[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='R')
+            {Black_Pieces.Rooks[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Rooks[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='N')
+            {Black_Pieces.Knights[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Knights[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='B')
+            {Black_Pieces.Bishops[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Bishops[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='Q')
+            {Black_Pieces.Queens[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Queens[(int)Piece[2]-48].Position[1] = l;}
+        else if (Piece[0]=='K')
+            {Black_Pieces.Kings[(int)Piece[2]-48].Position[0] = k; Black_Pieces.Kings[(int)Piece[2]-48].Position[1] = l;}
+    }
     Grid[i][j] = "--";
     Grid[k][l] = Piece;
     Moves.push_back(move);
+    if(!Special) return;
+    if (Piece[1]=='W')
+    {
+        if (Piece[0]=='P')
+            White_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='R')
+            White_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='N')
+            White_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='B')
+            White_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='Q')
+            White_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='K')
+            White_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+    }
+    else
+    {
+        if (Piece[0]=='P')
+            Black_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='R')
+            Black_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='N')
+            Black_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='B')
+            Black_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='Q')
+            Black_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+        else if (Piece[0]=='K')
+            Black_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(l*100+28, k*100+3);
+    }
 }
 void Board::Undo_Latest_Move(bool Special = false)
 {
@@ -1417,40 +1459,40 @@ void Board::Undo_Latest_Move(bool Special = false)
                 Black_Pieces.Queens[(int)Eliminated_Piece[2]-48].Position[0] = k;
         }
         Grid[k][l] = Eliminated_Piece;
-        if(!Special)
-            return;
-        if (Piece[1]=='W')
-        {
-            if (Piece[0]=='P')
-                White_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='R')
-                White_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='N')
-                White_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='B')
-                White_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='Q')
-                White_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='K')
-                White_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-        }
-    else
-        {
-            if (Piece[0]=='P')
-                Black_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='R')
-                Black_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='N')
-                Black_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='B')
-                Black_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='Q')
-                Black_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-            else if (Piece[0]=='K')
-                Black_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
-        }
     }
     Moves.pop_back();
+    if(!Special)
+        return;
+    if (Piece[1]=='W')
+    {
+        if (Piece[0]=='P')
+            White_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='R')
+            White_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='N')
+            White_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='B')
+            White_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='Q')
+            White_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='K')
+            White_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+    }
+    else
+    {
+        if (Piece[0]=='P')
+            Black_Pieces.Pawns[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='R')
+            Black_Pieces.Rooks[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='N')
+            Black_Pieces.Knights[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='B')
+            Black_Pieces.Bishops[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='Q')
+            Black_Pieces.Queens[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+        else if (Piece[0]=='K')
+            Black_Pieces.Kings[(int)Piece[2]-48].sprite.setPosition(j*100+28, i*100+3);
+    }
 }
 bool Board::is_Checkmate(bool col)
 {
@@ -2099,6 +2141,7 @@ void Board::SetupBoard()
     ResetWord.setPosition(Vector2f(845, 113));
     ResetWord.setString("RESET MOVES");
     ResetWord.setCharacterSize(20);
+    Check.setSize(Vector2f(100,100));
 }
 void Board::drawboard()
 {
@@ -2153,6 +2196,24 @@ void Board::drawboard()
                 }
             }
         }
+    if(is_in_Check(true))
+    {
+        if(is_Checkmate(true)) Check.setFillColor(Color(0,0,255));
+        else Check.setFillColor(Color(255,0,0));
+        int i = White_Pieces.Kings[0].Position[0], j = White_Pieces.Kings[0].Position[1];
+        Check.setPosition(Vector2f(j*100+25, i*100));
+        Window->draw(Check);
+        Window->draw(White_Pieces.Kings[0].sprite);
+    }
+    if(is_in_Check(false))
+    {
+        if(is_Checkmate(false)) Check.setFillColor(Color(0,0,255));
+        else Check.setFillColor(Color(255,0,0));
+        int i = Black_Pieces.Kings[0].Position[0], j = Black_Pieces.Kings[0].Position[1];
+        Check.setPosition(Vector2f(j*100+25, i*100));
+        Window->draw(Check);
+        Window->draw(Black_Pieces.Kings[0].sprite);
+    }
     if(Turn) text.setString("White's Turn");
     else text.setString("Black's Turn");
     Window->draw(text);
@@ -2162,6 +2223,8 @@ void Board::drawboard()
     }
     Window->draw(ResetAll);
     Window->draw(ResetWord);
+    for(int i=0; i<MoveChoices.size(); i++)
+        Window->draw(MoveChoices[i]);
 }
 void Board::RunGraphics()
 {
@@ -2175,9 +2238,13 @@ void Board::RunGraphics()
             if (event.type == Event::Closed)
                 Window->close();
             if (Mouse::isButtonPressed(Mouse::Left))
-            {
                 MouseClick(Mouse::getPosition(*Window));
-            }
+            else if(Mouse::isButtonPressed(Mouse::Right))
+                if(!Moves.empty())
+                {
+                    Undo_Latest_Move(true);
+                    Turn = !Turn;
+                }
         }
         Window->clear(Color(89,89,89));
         drawboard();
@@ -2186,173 +2253,395 @@ void Board::RunGraphics()
 }
 void Board::MouseClick(const Vector2i& position)
 {
-    if(position.x>=835 && position.x<=890 && position.y>=100 && position.y<=150)
+    if(position.x>=835 && position.x<=990 && position.y>=100 && position.y<=150)
     {
         while(!Moves.empty())
             Undo_Latest_Move(true);
-        return;
+        Turn = true;
     }
     else if(position.x>=25 && position.x<=825 && position.y>=0 && position.y<=800)
     {
         int x = position.y/100, y = (position.x-25)/100;
-        if(!((Turn && Grid[x][y][1]=='W')||(!Turn && Grid[x][y][1]=='B')))
+        for(int i=0; i<SelectedMoves.size(); i++)
+        {
+            if(SelectedMoves[i][0]==x && SelectedMoves[i][1]==y)
+            {
+                MakeMove(Selectedx, Selectedy, x, y, true);
+                Turn = !Turn;
+                SelectedMoves.clear();
+                MoveChoices.clear();
+                return;
+            }
+        }
+        SelectedMoves.clear();
+        MoveChoices.clear();
+        if(Grid[x][y]=="--" || !((Turn && Grid[x][y][1]=='W')||(!Turn && Grid[x][y][1]=='B')))
             return;
         string temp = Grid[x][y];
         if(temp[0]=='P')
+        {
+            if(temp[1]=='W')
+            {
+                vector<vector<int>> temp_ = White_Pieces.Pawns[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
                 {
-                    if(temp[1]=='W')
-                    {
-                        vector<vector<int>> temp_ = White_Pieces.Pawns.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
-                    else
-                    {
-                        vector<vector<int>> temp_ = Black_Pieces.Pawns.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
                 }
-                if(temp[0]=='K')
+                auto Mate = White_Pieces.Pawns[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
                 {
-                    if(temp[1]=='W')
-                    {
-                        vector<vector<int>> temp_ = White_Pieces.Kings.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
-                    else
-                    {
-                        vector<vector<int>> temp_ = Black_Pieces.Kings.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
                 }
-                if(temp[0]=='R')
+                auto Defence = White_Pieces.Pawns[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
                 {
-                    if(temp[1]=='W')
-                    {
-                        vector<vector<int>> temp_ = White_Pieces.Rooks.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
-                    else
-                    {
-                        vector<vector<int>> temp_ = Black_Pieces.Rooks.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
                 }
-                if(temp[0]=='B')
+                Mate.clear();
+                Defence.clear();
+            }
+            else
+            {
+                vector<vector<int>> temp_ = Black_Pieces.Pawns[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
                 {
-                    if(temp[1]=='W')
-                    {
-                        vector<vector<int>> temp_ = White_Pieces.Bishops.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
-                    else
-                    {
-                        vector<vector<int>> temp_ = Black_Pieces.Bishops.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
                 }
-                if(temp[0]=='N')
+                auto Mate = Black_Pieces.Pawns[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
                 {
-                    if(temp[1]=='W')
-                    {
-                        vector<vector<int>> temp_ = White_Pieces.Knights.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
-                    else
-                    {
-                        vector<vector<int>> temp_ = Black_Pieces.Knights.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
                 }
-                if(temp[0]=='Q')
+                auto Defence = Black_Pieces.Pawns[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
                 {
-                    if(temp[1]=='W')
-                    {
-                        vector<vector<int>> temp_ = White_Pieces.Queens.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
-                    else
-                    {
-                        vector<vector<int>> temp_ = Black_Pieces.Queens.[temp[2]-'0'].ListMoves(*this);
-                        Sprite MoveChoices[temp_.size()];
-                        for(int i=0; i<temp_.size(); i++)
-                        {
-                            MoveChoices[i].setTexture(MoveOptions['L']);
-                            MoveChoices[i].setPosition(temp_[i][1]*100+28, temp_[i][0]*100+3);
-                            Window->draw(MoveChoices[i]);
-                        }
-                    }
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
                 }
+                Mate.clear();
+                Defence.clear();
+            }
+        }
+        if(temp[0]=='K')
+        {
+            if(temp[1]=='W')
+            {
+                vector<vector<int>> temp_ = White_Pieces.Kings[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = White_Pieces.Kings[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = White_Pieces.Kings[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+            else
+            {
+                vector<vector<int>> temp_ = Black_Pieces.Kings[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = Black_Pieces.Kings[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = Black_Pieces.Kings[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+        }
+        if(temp[0]=='R')
+        {
+            if(temp[1]=='W')
+            {
+                vector<vector<int>> temp_ = White_Pieces.Rooks[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = White_Pieces.Rooks[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = White_Pieces.Rooks[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+            else
+            {
+                vector<vector<int>> temp_ = Black_Pieces.Rooks[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = Black_Pieces.Rooks[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = Black_Pieces.Rooks[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+        }
+        if(temp[0]=='B')
+        {
+            if(temp[1]=='W')
+            {
+                vector<vector<int>> temp_ = White_Pieces.Bishops[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = White_Pieces.Bishops[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = White_Pieces.Bishops[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+            else
+            {
+                vector<vector<int>> temp_ = Black_Pieces.Bishops[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = Black_Pieces.Bishops[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = Black_Pieces.Bishops[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+        }
+        if(temp[0]=='N')
+        {
+            if(temp[1]=='W')
+            {
+                vector<vector<int>> temp_ = White_Pieces.Knights[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = White_Pieces.Knights[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = White_Pieces.Knights[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+            else
+            {
+                vector<vector<int>> temp_ = Black_Pieces.Knights[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = Black_Pieces.Knights[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = Black_Pieces.Knights[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+        }
+        if(temp[0]=='Q')
+        {
+            if(temp[1]=='W')
+            {
+                vector<vector<int>> temp_ = White_Pieces.Queens[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = White_Pieces.Queens[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = White_Pieces.Queens[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+            else
+            {
+                vector<vector<int>> temp_ = Black_Pieces.Queens[temp[2]-'0'].ListMoves(*this);
+                for(int i=0; i<temp_.size(); i++)
+                    SelectedMoves.push_back({temp_[i][0], temp_[i][1]});
+                for(int i=0; i<SelectedMoves.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['L']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(SelectedMoves[i][1]*100+28, SelectedMoves[i][0]*100+3);
+                }
+                auto Mate = Black_Pieces.Queens[temp[2]-'0'].ListMateMoves(*this);
+                for(int i=0; i<Mate.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['M']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Mate[i][1]*100+28, Mate[i][0]*100+3);
+                }
+                auto Defence = Black_Pieces.Queens[temp[2]-'0'].ListDefenceMoves(*this);
+                for(int i=0; i<Defence.size(); i++)
+                {
+                    MoveChoices.push_back(Sprite());
+                    MoveChoices[MoveChoices.size()-1].setTexture(MoveOptions['D']);
+                    MoveChoices[MoveChoices.size()-1].setPosition(Defence[i][1]*100+28, Defence[i][0]*100+3);
+                }
+                Mate.clear();
+                Defence.clear();
+            }
+        }
+        Selectedx=x;
+        Selectedy=y;
+        return;
     }
+    SelectedMoves.clear();
+    MoveChoices.clear();
     return;
 }
 
-
+}
 
 #include<iostream>
 #include<Board.hpp>
